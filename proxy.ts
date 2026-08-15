@@ -18,7 +18,6 @@ export function proxy(request: NextRequest) {
   // No token → redirect to /login (unless already on a public route)
   if (!token && !isPublicRoute) {
     const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
 

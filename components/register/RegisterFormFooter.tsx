@@ -5,7 +5,7 @@ export const RegisterFormFooter = () => {
   return (
     <CardFooter className="justify-center py-5 bg-muted/30">
       <p className="text-sm text-muted-foreground">
-        Already have an account?{" "}
+        Already have an account?
         <Link
           href="/login"
           className="font-semibold text-brand hover:text-brand-hover transition-colors duration-200 hover:underline underline-offset-4"

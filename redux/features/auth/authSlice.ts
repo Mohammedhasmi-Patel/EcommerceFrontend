@@ -21,7 +21,6 @@ const initialState: AuthState = {
     error: null,
 };
 
-/** Async thunk — calls POST /auth/login and sets the auth cookie */
 export const loginUser = createAsyncThunk<UserData, LoginUserRequest>(
     'auth/login',
     async (credentials, { rejectWithValue }) => {
@@ -38,7 +37,6 @@ export const loginUser = createAsyncThunk<UserData, LoginUserRequest>(
                 return rejectWithValue('No token returned from server.');
             }
 
-            // Set cookie so the proxy can gate routes server-side
             setAuthTokenCookie(userData.token);
 
             return userData;
@@ -50,7 +48,6 @@ export const loginUser = createAsyncThunk<UserData, LoginUserRequest>(
     }
 );
 
-/** Async thunk — calls POST /auth/register with multipart/form-data and sets the auth cookie */
 export const registerUser = createAsyncThunk<UserData, RegisterUserRequest>(
     'auth/register',
     async (formData, { rejectWithValue }) => {
