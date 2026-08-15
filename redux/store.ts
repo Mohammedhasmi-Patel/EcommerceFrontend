@@ -9,6 +9,7 @@ import {
     REGISTER,
 } from "redux-persist";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
+import authReducer from "./features/auth/authSlice";
 
 // Fallback for SSR
 const createNoopStorage = () => {
@@ -31,7 +32,7 @@ const storage =
         : createNoopStorage();
 
 const rootReducer = combineReducers({
-    // auth: authReducer,
+    auth: authReducer,
     // cart: cartReducer,
 });
 

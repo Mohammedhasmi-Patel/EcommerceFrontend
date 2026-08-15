@@ -7,3 +7,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+
+Make Sure Validation (Zod) file come inside the Validators
+folder , same for Types related types folder & each has meaningfull suffix like loginUserSchema.validation.ts or for type
+loginUser.type.ts  like that.
+
+also one component never cross 200 lines of code , always split it into smaller components.
+
+Use shadcn ui component for each and every UI element as per requiement .
+
