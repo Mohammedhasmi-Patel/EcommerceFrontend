@@ -16,7 +16,7 @@ export default function RegisterPage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-[#C084FC]/10 rounded-full blur-[100px] animate-blob animation-delay-4000" />
       </div>
 
-      <div className="w-full max-w-[460px] animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="w-full max-w-[480px] animate-in fade-in slide-in-from-bottom-4 duration-700">
         <RegisterForm />
       </div>
     </main>
