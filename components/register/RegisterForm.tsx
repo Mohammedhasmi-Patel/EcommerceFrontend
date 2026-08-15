@@ -41,8 +41,8 @@ export const RegisterForm = () => {
     if (registerUser.rejected.match(result)) {
       showError(result.payload as string || "Registration failed");
     } else if (registerUser.fulfilled.match(result)) {
-      showSuccess("Account created successfully!", "Welcome to LuxeRetail.");
-      router.push("/dashboard");
+      showSuccess(result.payload.message || "Account created successfully!");
+      router.push("/");
     }
   };
 

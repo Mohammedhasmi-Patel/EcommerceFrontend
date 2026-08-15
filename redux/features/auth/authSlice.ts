@@ -21,7 +21,7 @@ const initialState: AuthState = {
     error: null,
 };
 
-export const loginUser = createAsyncThunk<UserData, LoginUserRequest>(
+export const loginUser = createAsyncThunk<{ user: UserData; message: string }, LoginUserRequest>(
     'auth/login',
     async (credentials, { rejectWithValue }) => {
         try {
@@ -39,7 +39,7 @@ export const loginUser = createAsyncThunk<UserData, LoginUserRequest>(
 
             setAuthTokenCookie(userData.token);
 
-            return userData;
+            return { user: userData, message: responseData.message || 'Login successful.' };
         } catch (error: any) {
             const message =
                 error?.response?.data?.message ?? error?.message ?? 'Login failed. Please try again.';
@@ -48,7 +48,7 @@ export const loginUser = createAsyncThunk<UserData, LoginUserRequest>(
     }
 );
 
-export const registerUser = createAsyncThunk<UserData, RegisterUserRequest>(
+export const registerUser = createAsyncThunk<{ user: UserData; message: string }, RegisterUserRequest>(
     'auth/register',
     async (formData, { rejectWithValue }) => {
         try {
@@ -83,7 +83,7 @@ export const registerUser = createAsyncThunk<UserData, RegisterUserRequest>(
             // Set cookie so the proxy can gate routes server-side
             setAuthTokenCookie(userData.token);
 
-            return userData;
+            return { user: userData, message: responseData.message || 'Registration successful.' };
         } catch (error: any) {
             const message =
                 error?.response?.data?.message ?? error?.message ?? 'Registration failed. Please try again.';
@@ -115,7 +115,7 @@ export const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(loginUser.fulfilled, (state, action) => {
-                const { token, ...user } = action.payload;
+                const { token, ...user } = action.payload.user;
                 state.isLoading = false;
                 state.isAuthenticated = true;
                 state.user = user;
@@ -131,7 +131,7 @@ export const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(registerUser.fulfilled, (state, action) => {
-                const { token, ...user } = action.payload;
+                const { token, ...user } = action.payload.user;
                 state.isLoading = false;
                 state.isAuthenticated = true;
                 state.user = user;

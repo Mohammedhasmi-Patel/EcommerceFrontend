@@ -39,8 +39,8 @@ export const LoginForm = () => {
     if (loginUser.rejected.match(result)) {
       showError(result.payload as string || "Failed to login");
     } else if (loginUser.fulfilled.match(result)) {
-      showSuccess("Welcome back!", "Redirecting to dashboard...");
-      router.push("/dashboard");
+      showSuccess(result.payload.message || "Welcome back!", "Redirecting to home page...");
+      router.push("/");
     }
   };
 
