@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const RegisterFormFooter = () => {
   return (
-    <CardFooter className="justify-center py-5 bg-muted/30">
+    <CardFooter className="justify-center py-3 bg-muted/30">
       <p className="text-sm text-muted-foreground">
         Already have an account?
         <Link

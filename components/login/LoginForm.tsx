@@ -48,8 +48,8 @@ export const LoginForm = () => {
     <Card className="w-full border-border/40 bg-card/80 backdrop-blur-xl shadow-xl shadow-black/5 rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-2xl hover:shadow-brand/5" size="sm">
       <LoginFormHeader />
 
-      <CardContent className="px-6 sm:px-8 pb-5">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <CardContent className="px-6 sm:px-8 pb-0">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           <LoginFormFields register={register} errors={errors} />
 
           <Button

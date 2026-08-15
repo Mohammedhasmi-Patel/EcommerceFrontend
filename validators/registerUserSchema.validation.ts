@@ -11,20 +11,16 @@ export const registerUserSchema = z
       .min(3, { message: "Last name must be at least 3 characters." })
       .max(50, { message: "Last name cannot exceed 50 characters." }),
     email: z
-      
+
       .email({ message: "Please enter a valid email address." })
       .max(100, { message: "Email cannot exceed 100 characters." }),
     password: z
       .string()
-      .min(8, { message: "Password must be at least 8 characters." })
-      .max(100, { message: "Password cannot exceed 100 characters." })
-      .regex(
-        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/,
-        {
-          message:
-            "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
-        }
-      ),
+      .min(8, "Password must be at least 8 characters")
+      .regex(/[0-9]/, "Password must contain at least one digit")
+      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    ,
     confirmPassword: z.string().min(1, { message: "Please confirm your password." }),
     avatar: z
       .any()

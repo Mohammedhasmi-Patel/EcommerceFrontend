@@ -9,7 +9,6 @@ export const metadata: Metadata = {
 export default function RegisterPage() {
   return (
     <main className="min-h-screen flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
-      {/* Animated background blobs */}
       <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
         <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-brand/15 rounded-full blur-[100px] animate-blob" />
         <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] bg-[#818CF8]/15 rounded-full blur-[100px] animate-blob animation-delay-2000" />
