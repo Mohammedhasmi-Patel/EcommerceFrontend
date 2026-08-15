@@ -8,6 +8,6 @@ export interface CustomInputProps {
   placeholder?: string;
   type?: string;
   autoComplete?: string;
-  error?: FieldError;
+  error?: any;
   endAdornment?: React.ReactNode;
 }
