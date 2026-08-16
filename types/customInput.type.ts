@@ -1,5 +1,4 @@
 import { LucideIcon } from "lucide-react";
-import { FieldError } from "react-hook-form";
 
 export interface CustomInputProps {
   id: string;
@@ -8,6 +7,7 @@ export interface CustomInputProps {
   placeholder?: string;
   type?: string;
   autoComplete?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error?: any;
   endAdornment?: React.ReactNode;
 }

@@ -40,9 +40,10 @@ export const loginUser = createAsyncThunk<{ user: UserData; message: string }, L
             setAuthTokenCookie(userData.token);
 
             return { user: userData, message: responseData.message || 'Login successful.' };
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string } }; message?: string };
             const message =
-                error?.response?.data?.message ?? error?.message ?? 'Login failed. Please try again.';
+                err?.response?.data?.message ?? err?.message ?? 'Login failed. Please try again.';
             return rejectWithValue(message);
         }
     }
@@ -84,9 +85,76 @@ export const registerUser = createAsyncThunk<{ user: UserData; message: string }
             setAuthTokenCookie(userData.token);
 
             return { user: userData, message: responseData.message || 'Registration successful.' };
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string } }; message?: string };
             const message =
-                error?.response?.data?.message ?? error?.message ?? 'Registration failed. Please try again.';
+                err?.response?.data?.message ?? err?.message ?? 'Registration failed. Please try again.';
+            return rejectWithValue(message);
+        }
+    }
+);
+
+export const updateUserProfile = createAsyncThunk<{
+    user: { firstName: string; lastName: string; email: string; avatar: string };
+    message: string;
+}, {
+    firstName: string;
+    lastName: string;
+    email: string;
+    oldAvatarPath?: string;
+    avatar?: FileList;
+}>(
+    'auth/update',
+    async (formData, { rejectWithValue }) => {
+        try {
+            const data = new FormData();
+            data.append('FirstName', formData.firstName);
+            data.append('LastName', formData.lastName);
+            data.append('Email', formData.email);
+            if (formData.oldAvatarPath) {
+                data.append('OldAvatarPath', formData.oldAvatarPath);
+            }
+            if (formData.avatar && formData.avatar[0]) {
+                data.append('Avatar', formData.avatar[0]);
+            }
+
+            const response = await axiosInstance.put<{
+                success: boolean;
+                message: string;
+                statusCode: number;
+                data: {
+                    id: string;
+                    firstName: string;
+                    lastName: string;
+                    email: string;
+                    avatar: string;
+                };
+            }>(
+                ENDPOINTS.AUTH.UPDATE,
+                data,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            );
+
+            const responseData = response.data;
+            const userData = responseData.data;
+
+            return {
+                user: {
+                    firstName: userData.firstName,
+                    lastName: userData.lastName,
+                    email: userData.email,
+                    avatar: userData.avatar,
+                },
+                message: responseData.message || 'Profile updated successfully.',
+            };
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string } }; message?: string };
+            const message =
+                err?.response?.data?.message ?? err?.message ?? 'Update failed. Please try again.';
             return rejectWithValue(message);
         }
     }
@@ -105,6 +173,11 @@ export const authSlice = createSlice({
         },
         clearAuthError: (state) => {
             state.error = null;
+        },
+        updateUser: (state, action) => {
+            if (state.user) {
+                state.user = { ...state.user, ...action.payload };
+            }
         },
     },
     extraReducers: (builder) => {
@@ -140,10 +213,28 @@ export const authSlice = createSlice({
             .addCase(registerUser.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
+            })
+            // Update profile cases
+            .addCase(updateUserProfile.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(updateUserProfile.fulfilled, (state, action) => {
+                state.isLoading = false;
+                if (state.user) {
+                    state.user.firstName = action.payload.user.firstName;
+                    state.user.lastName = action.payload.user.lastName;
+                    state.user.email = action.payload.user.email;
+                    state.user.avatar = action.payload.user.avatar;
+                }
+            })
+            .addCase(updateUserProfile.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
             });
     },
 });
 
-export const { logout, clearAuthError } = authSlice.actions;
+export const { logout, clearAuthError, updateUser } = authSlice.actions;
 export default authSlice.reducer;
 

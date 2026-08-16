@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { CartItemCard } from "@/components/cart/CartItemCard";
 import { CartSummary } from "@/components/cart/CartSummary";
-import { CartItemType } from "@/types/cart.type";
+import { CartItemType, CartResponse, AddToCartResponse } from "@/types/cart.type";
 import { axiosInstance } from "@/config/axios";
 import { ENDPOINTS } from "@/constants/endpoints";
 import { Loader2, ArrowLeft, ShoppingBag } from "lucide-react";
@@ -25,34 +25,39 @@ export default function CartPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axiosInstance.get<any>(ENDPOINTS.CART);
+      const response = await axiosInstance.get<CartResponse>(ENDPOINTS.CART);
       const resData = response.data;
       setCartItems(resData?.data || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Fetch cart error:", err);
-      setError(err?.response?.data?.message || err?.message || "Failed to load cart.");
+      const errorMessage = err instanceof Error ? err.message : (typeof err === 'string' ? err : "Failed to load cart.");
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCart();
+    const timer = setTimeout(() => {
+      fetchCart();
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleIncrement = async (item: CartItemType) => {
     try {
-      const response = await axiosInstance.post<any>(ENDPOINTS.CART, {
+      const response = await axiosInstance.post<AddToCartResponse>(ENDPOINTS.CART, {
         productId: item.productId,
         quantity: 1,
       });
       showSuccess(response.data.message || "Quantity increased");
-      
+
       // Re-fetch cart from database to synchronize
-      const updatedResponse = await axiosInstance.get<any>(ENDPOINTS.CART);
+      const updatedResponse = await axiosInstance.get<CartResponse>(ENDPOINTS.CART);
       setCartItems(updatedResponse.data?.data || []);
-    } catch (err: any) {
-      showError(err?.response?.data?.message || err?.message || "Failed to update quantity.");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : (typeof err === 'string' ? err : "Failed to update quantity.");
+      showError(errorMessage);
     }
   };
 
@@ -66,17 +71,18 @@ export default function CartPage() {
 
   const handleRemove = async (item: CartItemType) => {
     try {
-      const response = await axiosInstance.delete<any>(ENDPOINTS.CART, {
+      const response = await axiosInstance.delete<{ message?: string }>(ENDPOINTS.CART, {
         params: { cartItemId: item.cartItemId },
       });
       showSuccess(response.data.message || "Cart item deleted successfully");
-      
+
       // Refresh cart list from backend database
-      const updatedResponse = await axiosInstance.get<any>(ENDPOINTS.CART);
+      const updatedResponse = await axiosInstance.get<CartResponse>(ENDPOINTS.CART);
       setCartItems(updatedResponse.data?.data || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Remove cart item error:", err);
-      showError(err?.response?.data?.message || err?.message || "Failed to delete cart item.");
+      const errorMessage = err instanceof Error ? err.message : (typeof err === 'string' ? err : "Failed to delete cart item.");
+      showError(errorMessage);
     }
   };
 
@@ -87,10 +93,7 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header
-        searchQuery=""
-        onSearchChange={() => {}}
         cartCount={cartCount}
-        onCartClick={() => {}}
       />
 
       <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-6">
@@ -139,7 +142,7 @@ export default function CartPage() {
                 Before you check out, you must add some products to your shopping cart.
               </p>
             </div>
-            <Button className="rounded-xl mt-2 px-6" onClick={() => router.push("/")}>
+            <Button className="rounded-xl mt-2 px-6 cursor-pointer bg-brand text-white hover:bg-brand-hover shadow-sm" onClick={() => router.push("/")}>
               Explore Products
             </Button>
           </div>

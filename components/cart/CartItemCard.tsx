@@ -97,10 +97,11 @@ export const CartItemCard = ({
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
               <AlertDialogAction
                 variant="destructive"
                 onClick={() => onRemove(item)}
+                className="cursor-pointer"
               >
                 Remove
               </AlertDialogAction>

@@ -10,6 +10,7 @@ import {
 } from "redux-persist";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 import authReducer from "./features/auth/authSlice";
+import wishlistReducer from "./features/wishlist/wishlistSlice";
 
 // Fallback for SSR
 const createNoopStorage = () => {
@@ -17,7 +18,7 @@ const createNoopStorage = () => {
         getItem() {
             return Promise.resolve(null);
         },
-        setItem(_key: string, value: any) {
+        setItem(_key: string, value: unknown) {
             return Promise.resolve(value);
         },
         removeItem() {
@@ -33,13 +34,14 @@ const storage =
 
 const rootReducer = combineReducers({
     auth: authReducer,
+    wishlist: wishlistReducer,
     // cart: cartReducer,
 });
 
 const persistConfig = {
     key: "root",
     storage,
-    // whitelist: ["auth", "cart"], // Add reducers you want to persist here
+    whitelist: ["auth", "wishlist"], // Add reducers you want to persist here
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
